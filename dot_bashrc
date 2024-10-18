@@ -4,13 +4,16 @@
 [[ $- == *i* && -e "$HOME/.blesh/ble.sh" ]] && . "$HOME/.blesh/ble.sh" --noattach
 
 HISTCONTROL=erasedups
-HISTFILESIZE=1000
-HISTSIZE=1000
+HISTFILESIZE=10000
+HISTSIZE=10000
+HISTTIMEFORMAT="%FT%T%z "
 IGNOREEOF=1
+PROMPT_COMMAND="history -a; history -c; history -r"
 PS1='[\u@\h \W]\$ '
 
 shopt -s checkwinsize
 shopt -s histappend
+shopt -s histverify
 shopt | grep -q direxpand && shopt -s direxpand
 
 alias beautify_tsv='csvq -i TSV -f FIXED "SELECT * FROM STDIN"'
