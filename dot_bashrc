@@ -7,7 +7,7 @@ HISTCONTROL=erasedups
 HISTFILESIZE=100000
 HISTSIZE=100000
 HISTTIMEFORMAT="%FT%T%z "
-IGNOREEOF=1
+IGNOREEOF=3
 PROMPT_COMMAND="history -a; history -c; history -r"
 PS1='[\u@\h \W]\$ '
 
