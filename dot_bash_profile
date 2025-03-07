@@ -13,14 +13,6 @@ if command -v podman &>/dev/null; then
   export DOCKER_HOST
 fi
 
-if command -v scl &>/dev/null; then
-  collections=$(scl --list)
-  for collection in ${collections}; do
-    # shellcheck disable=SC1091
-    . scl_source enable "$collection"
-  done
-fi
-
 if [[ -f "$HOME/python3/bin/activate" ]]; then
   # shellcheck disable=SC1091
   . "$HOME/python3/bin/activate"
