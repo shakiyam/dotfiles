@@ -1,7 +1,10 @@
 set -g fish_prompt_pwd_dir_length 0
-set -x PATH $HOME/.local/bin $HOME/go/bin $PATH /usr/local/go/bin
-set -x ENHANCD_FILTER fzf
-set -x FZF_DEFAULT_OPTS "--height=~30% --layout=reverse"
+set -gx PATH $HOME/.local/bin $HOME/go/bin $PATH /usr/local/go/bin
+set -gx ENHANCD_FILTER fzf
+set -gx FZF_DEFAULT_OPTS "--height=~30% --layout=reverse"
+if command -v podman >/dev/null 2>&1
+    set -gx DOCKER_HOST "unix://$XDG_RUNTIME_DIR/podman/podman.sock"
+end
 
 alias beautify_tsv 'csvq -i TSV -f FIXED "SELECT * FROM STDIN"'
 alias cp 'cp -i'
