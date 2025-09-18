@@ -17,5 +17,9 @@ alias less 'less -R'
 alias ls 'eza -F --time-style long-iso'
 alias mv 'mv -i'
 alias rm 'rm -i'
-alias shfmt 'shfmt -l -d -i 2 -ci -bn -kp'
+alias shfmt 'shfmt -l -d -i 2 -ci -bn'
 alias watch 'watch --color'
+
+if command -v mise >/dev/null 2>&1
+    mise activate fish | source
+end
