@@ -12,6 +12,12 @@
 3. Don't add explanatory comments unless specifically requested
 4. Focus on functionality over documentation
 5. Never proactively create README or documentation files
+6. When specifications change, check if README.md and CLAUDE.md need updates
+7. For implementation tasks, explain the approach and reasoning before writing code
+8. For bug fixes or specification changes, write test code first before implementation
+9. Make changes incrementally in small, verifiable steps
+10. Run tests after changes to verify behavior
+11. When errors occur, analyze root cause before fixing
 
 ## Response Style
 - Be concise and direct
