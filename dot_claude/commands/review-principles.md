@@ -4,6 +4,23 @@ description: Review code against maintainability principles
 
 Review the current project code against the following maintainability principles and provide an organized report.
 
+## Output Format
+
+For each principle, provide:
+- Score: X/10 (Rating) **← REQUIRED: Always include the rating label in parentheses**
+  - 10/10 (Excellent): No issues, exemplary implementation
+  - 8-9/10 (Good): Minor issues only, well implemented
+  - 6-7/10 (Acceptable): Some issues but generally adequate
+  - 4-5/10 (Needs Improvement): Multiple issues requiring attention
+  - 1-3/10 (Poor): Significant problems, major refactoring needed
+- **Strengths:** List specific examples from the codebase
+- **Areas for improvement:** List specific issues with file:line references when applicable
+
+At the end, provide:
+- **Overall Score:** X/10 (Rating) **← REQUIRED: Include rating label** (average across all principles)
+- **Summary:** 2-3 sentences highlighting main findings
+- **Recommended improvements:** Prioritized list of actionable items
+
 Source: https://be.shos.info/
 
 1. Express Intent
