@@ -33,7 +33,7 @@
       "Bash(sudo:*)",
       "Bash(rm -rf:*)",
       "Bash(eval:*)"
-
     ]
-  }
+  },
+  "alwaysThinkingEnabled": false
 }
