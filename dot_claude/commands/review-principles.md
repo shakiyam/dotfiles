@@ -6,20 +6,33 @@ Review the current project code against the following maintainability principles
 
 ## Output Format
 
+CRITICAL: You MUST follow this exact format for scores. Do NOT output "Score: 9/10" - you MUST output "Score: 9/10 (Good)".
+
 For each principle, provide:
-- Score: X/10 (Rating) **← REQUIRED: Always include the rating label in parentheses**
-  - 10/10 (Excellent): No issues, exemplary implementation
-  - 8-9/10 (Good): Minor issues only, well implemented
-  - 6-7/10 (Acceptable): Some issues but generally adequate
-  - 4-5/10 (Needs Improvement): Multiple issues requiring attention
-  - 1-3/10 (Poor): Significant problems, major refactoring needed
+- **Score: X/10 (Rating Label)**
+  - Use one of these exact formats:
+    - Score: 10/10 (Excellent)
+    - Score: 9/10 (Good) or Score: 8/10 (Good)
+    - Score: 7/10 (Acceptable) or Score: 6/10 (Acceptable)
+    - Score: 5/10 (Needs Improvement) or Score: 4/10 (Needs Improvement)
+    - Score: 3/10 (Poor) or Score: 2/10 (Poor) or Score: 1/10 (Poor)
 - **Strengths:** List specific examples from the codebase
 - **Areas for improvement:** List specific issues with file:line references when applicable
 
 At the end, provide:
-- **Overall Score:** X/10 (Rating) **← REQUIRED: Include rating label** (average across all principles)
+- **Overall Score: X/10 (Rating Label)** - Calculate average and use appropriate label from above
 - **Summary:** 2-3 sentences highlighting main findings
 - **Recommended improvements:** Prioritized list of actionable items
+
+Example of correct format:
+```
+## 1. Express Intent
+**Score: 9/10 (Good)**
+
+**Strengths:**
+- Clear function names
+...
+```
 
 Source: https://be.shos.info/
 
