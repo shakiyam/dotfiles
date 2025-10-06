@@ -1,0 +1,4 @@
+[user]
+	useConfigOnly = true
+[credential]
+	helper = cache
