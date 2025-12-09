@@ -8,6 +8,7 @@ end
 
 alias beautify_tsv 'csvq -i TSV -f FIXED "SELECT * FROM STDIN"'
 alias cp 'cp -i'
+alias diff 'delta --line-numbers --side-by-side --syntax-theme="Monokai Extended"'
 alias egrep 'egrep --color=auto'
 alias fgrep 'fgrep --color=auto'
 alias gitchmod 'git update-index --add --chmod=+x'
@@ -25,5 +26,5 @@ if command -v mise >/dev/null 2>&1
 end
 
 if command -v atuin >/dev/null 2>&1
-    atuin init fish | source
+    atuin init fish --disable-up-arrow | source
 end
