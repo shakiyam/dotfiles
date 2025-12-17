@@ -1,9 +1,8 @@
 ---
 description: "Generate a commit message from staged changes (git diff --cached)"
-allowed-tools: ["Bash"]
 ---
 
-# Generate Commit Message
+# Generate Commit Message from Staged Changes
 
 Analyze the staged changes and generate an appropriate commit message:
 

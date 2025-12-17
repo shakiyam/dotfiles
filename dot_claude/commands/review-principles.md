@@ -1,8 +1,8 @@
 ---
-description: Review code against maintainability principles
+description: "Review code against maintainability principles"
 ---
 
-# Review Code Maintainability
+# Review Code Against Maintainability Principles
 
 Review the current project code against the following maintainability principles and provide an organized report.
 

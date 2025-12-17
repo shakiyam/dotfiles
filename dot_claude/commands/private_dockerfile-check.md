@@ -1,4 +1,8 @@
-# Dockerfile Best Practices Check
+---
+description: "Check Dockerfile against security and performance best practices"
+---
+
+# Check Dockerfile Against Best Practices
 
 Check the Dockerfile against the following best practices.
 
