@@ -5,7 +5,7 @@ function tms --description "Tmux sessions"
     end
 
     set -l selection (begin
-        tmux list-sessions 2>/dev/null
+        tmux list-sessions -F '#{session_created} #{session_name}: #{session_windows} windows (created #{t:session_created})#{?session_attached, (attached),}' 2>/dev/null | sort -n | string replace -r '^\d+ ' ''
         echo "[New Session]"
     end | fzf --height=10 --reverse)
 
