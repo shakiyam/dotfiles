@@ -1,5 +1,5 @@
 set -g fish_prompt_pwd_dir_length 0
-set -gx PATH $HOME/.local/bin $HOME/go/bin $PATH /usr/local/go/bin
+set -gx PATH $HOME/.local/bin $PATH
 set -gx ENHANCD_FILTER fzf
 set -gx FZF_DEFAULT_OPTS "--height=~30% --layout=reverse"
 if command -v podman >/dev/null 2>&1
