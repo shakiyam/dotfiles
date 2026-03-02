@@ -1,76 +1,76 @@
 ---
-description: "Review code against maintainability principles"
+description: "保守性の原則に基づいてコードをレビューする"
 ---
 
-# Review Code Against Maintainability Principles
+# 保守性の原則に基づくコードレビュー
 
-Review the current project code against the following maintainability principles and provide an organized report.
+現在のプロジェクトのコードを以下の保守性の原則に照らしてレビューし、整理されたレポートを提供してください。
 
-## Output Format
+## 出力フォーマット
 
-CRITICAL: You MUST follow this exact format for scores. Do NOT output "Score: 9/10" - you MUST output "Score: 9/10 (Good)".
+重要: スコアは必ず以下の形式に従ってください。「スコア: 9/10」ではなく、必ず「スコア: 9/10 (良好)」と出力してください。
 
-For each principle, provide:
+各原則について以下を記載:
 
-- **Score: X/10 (Rating Label)**
-  - Use one of these exact formats:
-    - Score: 10/10 (Excellent)
-    - Score: 9/10 (Good) or Score: 8/10 (Good)
-    - Score: 7/10 (Acceptable) or Score: 6/10 (Acceptable)
-    - Score: 5/10 (Needs Improvement) or Score: 4/10 (Needs Improvement)
-    - Score: 3/10 (Poor) or Score: 2/10 (Poor) or Score: 1/10 (Poor)
-- **Strengths:** List specific examples from the codebase
-- **Areas for improvement:** List specific issues with file:line references when applicable
+- **スコア: X/10 (評価ラベル)**
+  - 以下の形式のいずれかを使用:
+    - スコア: 10/10 (優秀)
+    - スコア: 9/10 (良好) または スコア: 8/10 (良好)
+    - スコア: 7/10 (許容範囲) または スコア: 6/10 (許容範囲)
+    - スコア: 5/10 (要改善) または スコア: 4/10 (要改善)
+    - スコア: 3/10 (不良) または スコア: 2/10 (不良) または スコア: 1/10 (不良)
+- **良い点:** コードベースからの具体例を列挙
+- **改善点:** 該当する場合はファイル名:行番号を付けて具体的な問題を列挙
 
-At the end, provide:
+最後に以下を記載:
 
-- **Overall Score: X/10 (Rating Label)** - Calculate average and use appropriate label from above
-- **Summary:** 2-3 sentences highlighting main findings
-- **Recommended improvements:** Prioritized list of actionable items
+- **総合スコア: X/10 (評価ラベル)** - 平均を算出し、上記の適切なラベルを使用
+- **まとめ:** 主な所見を2〜3文で記載
+- **推奨改善事項:** 優先度順のアクション項目リスト
 
-Example of correct format:
+正しい形式の例:
 
 ```markdown
-## 1. Express Intent
+## 1. 意図の表現
 
-**Score: 9/10 (Good)**
+**スコア: 9/10 (良好)**
 
-**Strengths:**
+**良い点:**
 
-- Clear function names
+- 関数名が明確
 ...
 ```
 
-Source: <https://be.shos.info/>
+出典: <https://be.shos.info/>
 
-1. Express Intent
-   - Intent is expressed
-   - Intent is easy to understand
-   - There is little description other than intent
-   - What (what to do) is described, not How (how to do it)
-   - If possible, Why (why to do it) is also described
+1. 意図の表現
+   - 意図が表現されている
+   - 意図が理解しやすい
+   - 意図以外の記述が少ない
+   - How（どうやるか）ではなく What（何をするか）が記述されている
+   - 可能であれば Why（なぜそうするか）も記述されている
 
-2. Single Responsibility Principle
-   - Program units describe a single job
-   - That job is completely described within that program unit
+2. 単一責任の原則
+   - プログラム単位が一つの仕事を記述している
+   - その仕事がそのプログラム単位内で完結している
 
-3. Accurate Naming
-   - Names express their (only) job (in one phrase, necessary and sufficient)
-   - Same things have the same name, different things have different names
-   - Don't use known names with different meanings
-   - Don't use problem domain words with changed meanings
+3. 正確な命名
+   - 名前が（唯一の）仕事を（一つのフレーズで、過不足なく）表現している
+   - 同じものには同じ名前、異なるものには異なる名前がついている
+   - 既知の名前を異なる意味で使っていない
+   - 問題領域の用語を意味を変えて使っていない
 
-4. Once And Only Once
-   - Things with the same intent are not written repeatedly
-   - You can distinguish between what it is and what it isn't
+4. 一度だけの原則
+   - 同じ意図のものが繰り返し書かれていない
+   - そうであるものとそうでないものを区別できる
 
-5. Appropriately Described Methods
-   - Method contents consist of descriptions at the same level of abstraction
-   - Method contents are described at natural granularity (like spoken language)
-   - Appropriate amount (not too much description)
+5. 適切に記述されたメソッド
+   - メソッドの内容が同じ抽象度の記述で構成されている
+   - メソッドの内容が自然な粒度（話し言葉のように）で記述されている
+   - 適切な量（記述が多すぎない）
 
-6. Rule Unification
-   - The whole follows the same rules
+6. ルールの統一
+   - 全体が同じルールに従っている
 
-7. Testable
-   - It should be clear that the description is correct
+7. テスト可能性
+   - 記述が正しいことが明確である
