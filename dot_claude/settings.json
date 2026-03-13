@@ -35,5 +35,6 @@
       "Bash(eval:*)"
     ]
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high"
 }
