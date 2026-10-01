@@ -14,3 +14,5 @@
 	syntax-theme = Monokai Extended
 [merge]
 	conflictStyle = zdiff3
+[log]
+	decorate = true
