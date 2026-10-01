@@ -6,3 +6,15 @@ show_preview = true
 show_help = false
 show_tabs = false
 show_numeric_shortcuts = false
+
+# Do not save commands that contain secrets (complements the built-in secrets_filter)
+history_filter = [
+  # FOO_API_KEY=xxx, --password=xxx (values from $VAR are allowed)
+  '(?i)(api_?key|token|secret|passw(or)?d)[a-z0-9_]*=[^$\s]',
+  # fish: set -gx FOO_TOKEN xxx (values from $VAR or (cmd) are allowed)
+  '(?i)\bset\s+(-[a-z]+\s+)*[a-z0-9_]*(api_?key|token|secret|passw(or)?d)[a-z0-9_]*\s+[^$\s(]',
+  # echo xxx | docker login --password-stdin
+  '\|\s*docker\s+login',
+  # Authorization: Bearer <token>
+  '(?i)bearer\s+[a-z0-9._-]{20,}',
+]
