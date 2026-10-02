@@ -25,6 +25,10 @@ if command -v mise >/dev/null 2>&1
     mise activate fish | source
 end
 
+if command -v gh >/dev/null 2>&1
+    set -gx GITHUB_TOKEN (gh auth token 2>/dev/null)
+end
+
 if command -v atuin >/dev/null 2>&1
     atuin init fish --disable-up-arrow | source
 end
