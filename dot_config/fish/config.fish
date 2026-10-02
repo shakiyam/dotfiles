@@ -26,7 +26,7 @@ if command -v mise >/dev/null 2>&1
 end
 
 if command -v gh >/dev/null 2>&1
-    set -gx GITHUB_TOKEN (gh auth token 2>/dev/null)
+    set -gx GITHUB_TOKEN (env -u GITHUB_TOKEN gh auth token 2>/dev/null)
 end
 
 if command -v atuin >/dev/null 2>&1
