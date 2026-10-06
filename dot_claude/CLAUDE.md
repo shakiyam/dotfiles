@@ -20,6 +20,8 @@
 - **TODO.md** - Record out-of-scope improvement findings from reviews and discussions as TODO.md items instead of acting on them immediately, unless the user asks to act now; add and report them without separate approval, keeping them out of the current commit: leave them unstaged and propose their commit afterward, or, if TODO.md already has changes for the current commit, add them only after that commit
 - **TODO.md format** - Numbered list in priority order (no checkboxes), each item self-contained enough to act on later; delete finished items and renumber; record items in the repo where the work will happen
 - **Sibling repos follow ../bbs** - In repos whose `tools/` mirrors `../bbs/tools/`, `../bbs` is the reference for `tools/`, Makefile, and workflows: keep same-named tool scripts byte-identical including permissions, and keep Makefile targets alphabetical. Before changing, report differences classified as (a) should align, (b) legitimately project-specific, (c) optional improvements; when this repo is ahead of bbs, report a back-port candidate instead of overwriting
+- **Standalone wrappers** - Root-level wrappers distributed on their own must not source `tools/` and are excluded from alignment
+- **Generic tools/** - `tools/` holds only reusable scripts that run standalone (no project-file reads or new required arguments; duplication is fine); project-specific scripts go in the repo root
 - **Review before external publish** - IMPORTANT: Prepare and verify locally, then pause for user review before externally visible actions (creating repos, publishing)
 
 ## Response Style
