@@ -1,0 +1,19 @@
+onboarding = false
+
+[ui]
+tab_bar_right = [
+  { type = "hostname" },
+  { type = "datetime", format = "%Y-%m-%d(%a) %H:%M:%S" },
+]
+
+[ui.sound]
+enabled = false
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+[keys]
+prefix = "ctrl+t"
+split_vertical = "prefix+|"
+detach = ["prefix+d", "prefix+q"]
