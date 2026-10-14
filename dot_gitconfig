@@ -2,6 +2,8 @@
 	useConfigOnly = true
 [credential]
 	helper = cache
+# Let gh supply GitHub credentials instead of the cache: the empty helper clears inherited ones,
+# and `gh auth setup-git` is avoided because it writes gh's absolute path, which changes when mise updates gh
 [credential "https://github.com"]
 	helper =
 	helper = !gh auth git-credential
