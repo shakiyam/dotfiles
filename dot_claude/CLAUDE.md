@@ -3,7 +3,7 @@
 ## Implementation
 
 - **Test-First** - When a change affects functional behavior, write tests first and confirm they fail before implementing (except documentation, formatting, and renaming)
-- **Update docs** - Update README.md and CLAUDE.md when specs change
+- **Update docs** - Update README.md and AGENTS.md when specs change (project instruction files are named AGENTS.md; only this global file stays CLAUDE.md)
 - **Generalize docs** - Write generalized instructions instead of highlighting a few cases; reference the source of truth (code, self-documenting tools) instead of duplicating values or lists; don't add notes that are already stated or derivable from listed commands
 - **Explicit over generated** - When removing duplication in tables or dispatch lists, extract only the repeated body into a helper and keep the enumeration explicit
 - **Project containers, not host tools** - Run Python and other project tooling through the project's container wrappers or Make targets, not host interpreters
