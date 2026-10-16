@@ -1,0 +1,4 @@
+# TODO
+
+1. Add a user-level skill that reports differences between the current repository and a reference repository given as an argument. Compare the top-level structure, Makefile targets and their `##` comments, `tools/` scripts, container files, GitHub Actions workflows, lint configuration files, AGENTS.md, and root-level scripts. Classify each difference as one the current repository should follow, one to back-port to the reference, or a legitimately project-specific one, and report without editing files.
+2. Remove overlap between the global instructions (`dot_claude/CLAUDE.md`) and the user-level skills: keep policies such as the reference repository, byte-identical tools, and the (a)/(b)/(c) classification in the global instructions, keep procedures in the skills, and make neither restate the other.
