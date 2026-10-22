@@ -1,4 +1,4 @@
-theme = "github-dark-default"
+theme = "github-dark-high-contrast"
 mode = "unified"
 line_numbers = true
 wrap_lines = false
