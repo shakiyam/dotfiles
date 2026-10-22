@@ -3,10 +3,11 @@
 [credential]
 	helper = cache
 # Let gh supply GitHub credentials instead of the cache: the empty helper clears inherited ones,
-# and `gh auth setup-git` is avoided because it writes gh's absolute path, which changes when mise updates gh
+# and `gh auth setup-git` is avoided because it writes gh's absolute path, which changes when mise updates gh;
+# without gh, explain the options before git prompts for a token
 [credential "https://github.com"]
 	helper =
-	helper = !gh auth git-credential
+	helper = "!f() { if command -v gh >/dev/null; then gh auth git-credential \"$@\"; elif [ \"$1\" = get ]; then echo \"gh is not installed: enter a token, or install gh and run 'gh auth login'\" >&2; fi; }; f"
 [core]
 	pager = delta
 [interactive]
