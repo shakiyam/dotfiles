@@ -1,5 +1,6 @@
 ---
-description: "Check Dockerfile against security and performance best practices"
+name: dockerfile-check
+description: "Check a Dockerfile against security and performance best practices. Use when creating or modifying a Dockerfile, or when asked to review one."
 ---
 
 # Check Dockerfile Against Best Practices
