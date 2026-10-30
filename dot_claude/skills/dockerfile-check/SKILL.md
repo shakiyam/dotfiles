@@ -1,58 +1,46 @@
 ---
 name: dockerfile-check
-description: "Check a Dockerfile against security and performance best practices. Use when creating or modifying a Dockerfile, or when asked to review one."
+description: Dockerfileをセキュリティとパフォーマンスのベスト・プラクティスに照らしてチェックする。Dockerfileを作成・変更したときや、レビューを頼まれたときに使う。
 ---
 
-# Check Dockerfile Against Best Practices
+# Dockerfileのベスト・プラクティス・チェック
 
-Check the Dockerfile against the following best practices.
+1. Dockerfileに対してhadolintを実行する。プロジェクトに `make hadolint` があればそれを使い、なければ `hadolint` を直接実行する。
+2. 以下のチェックリストに照らしてDockerfileを確認する。チェックリストはhadolintが検出しない項目だけに絞ってある。Dockerfile以外のファイルで判断する項目は、各項目に書かれたファイルを読む。
 
-## References
+## チェックリスト
 
-1. [Best practices | Docker Docs](https://docs.docker.com/build/building/best-practices/)
-2. [CIS Docker Benchmark](https://www.cisecurity.org/benchmark/docker)
-3. [OWASP Docker Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)
-4. [Top 20 Dockerfile best practices | Sysdig](https://www.sysdig.com/learn-cloud-native/dockerfile-best-practices)
+### ベース・イメージ
 
-## Checklist
+- 軽量なイメージ(slim/alpine/distroless/Chainguard)を使う
+- ベース・イメージはDocker Official Images、Verified Publisher、またはベンダー自身のレジストリのものを使う
 
-### Base Image
+### ビルドの最適化
 
-- Use lightweight images (slim/alpine/distroless/Chainguard) [1]
-- Pin versions (avoid :latest) [1]
-- Use trusted registries [2,3]
+- マルチ・ステージ・ビルドを使う
+- 変更頻度の低い命令から順に並べる(キャッシュの最適化)
+- .dockerignoreを用意する
 
-### Build Optimization
+### パッケージ管理
 
-- Use multi-stage builds [1,4]
-- Minimize layers (chain commands with &&) [1,4]
-- Order instructions from least to most frequently changing (cache optimization) [1]
-- Configure .dockerignore [1]
-- Use COPY instead of ADD [1,2]
-- Use set -o pipefail for piped commands [1]
+- 不要なパッケージを入れない
+- apt-get updateとinstallを同じRUNで実行する
 
-### Package Management
+### セキュリティ
 
-- Exclude unnecessary packages [2,4]
-- Run apt-get update && install in the same RUN [1,2]
-- Use --no-install-recommends [1]
-- Remove apt cache (/var/lib/apt/lists/*) [1]
+- 最終ステージをroot以外のUSERで実行する
+- シークレットをイメージに埋め込まない。ビルド時のシークレットは `RUN --mount=type=secret` で渡す
+- 最終ステージがroot以外のユーザーで動く常駐サービスで、リポジトリ内の実行時の設定(composeファイルや実行コマンド)が `no-new-privileges` を設定していない場合は、setuid/setgidビットを削除する
 
-### Security
+### 設定
 
-- Run as non-root user [2,3]
-- Create dedicated user (groupadd/useradd) [1,4]
-- Do not embed secrets in Dockerfiles [2]
-- Consider removing setuid/setgid binaries [2]
+- サービスが待ち受けるポートをEXPOSEで宣言する
+- `org.opencontainers.image.revision` をビルド引数から設定する。CIのワークフローやMakefileがイメージをレジストリにpushしている場合は、`org.opencontainers.image.source` も設定する。その他のOCIラベルは任意
 
-### Configuration
+## 出力形式
 
-- Set WORKDIR (avoid cd) [1]
-- Declare EXPOSE if applicable [1]
-- Use exec form for CMD (e.g., CMD ["executable"]) [1]
-- Add LABEL for metadata (OCI standard: org.opencontainers.image.*) [4]
+hadolintの結果とチェックリストの各項目を1つの表にまとめる。このイメージに当てはまらない項目は、理由を添えて「該当なし」とする。問題があれば改善案を示す。
 
-## Output Format
+## 根拠
 
-Output results in a table format and suggest improvements if issues are found.
-Do not include reference numbers in the output.
+項目をチェックする理由やしない理由を聞かれたら、このスキルのディレクトリにある `references.md` を読んで答える。
