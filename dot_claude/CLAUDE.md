@@ -27,9 +27,10 @@
 
 - **Recording** - Record out-of-scope improvement findings from reviews and discussions as TODO.md items instead of acting on them immediately, unless the user asks to act now; add and report them without separate approval, keeping them out of the current commit: leave them unstaged and propose their commit afterward, or, if TODO.md already has changes for the current commit, add them only after that commit
 - **Location** - Record items in the repo where the work will happen
-- **Format** - Numbered list in priority order, without checkboxes
-- **Items** - One task per item, each self-contained enough to act on later and naming the items it must wait for
-- **Completion** - Delete finished items and renumber; delete the file when no items remain
+- **Format** - Bullet list under a `# TODO` heading, one `- TODO#<n> <task>` line per item in priority order, without checkboxes; end the file with a `Next ID: TODO#<n>` line
+- **IDs** - Give a new item the `Next ID` and increment it; never renumber or reuse IDs, and refer to items by ID
+- **Items** - One task per item, each self-contained enough to act on later and naming the items it must wait for by ID
+- **Completion** - Delete finished items without renumbering; keep the file even when no items remain
 
 ## Response Style
 

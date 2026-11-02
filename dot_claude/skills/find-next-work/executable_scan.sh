@@ -10,7 +10,7 @@ set -Eeu -o pipefail
 #   behind        <branch> <n>  (one line per branch)
 #   no-upstream   <branch>      (one line per branch; "(gone)" if the upstream was deleted)
 #   stash         <n>
-#   todo-file     <path> items=<n>  (tracked TODO.md; items are numbered list lines)
+#   todo-file     <path> items=<n>  (tracked TODO.md; items are "- TODO#<n>" lines)
 #   todo-comment  <path>:<line>:<text>  (one line per line containing TODO, FIXME, XXX or HACK, excluding mentions of TODO.md)
 #   clean         no details; printed when none of the above apply
 
@@ -102,7 +102,7 @@ scan() {
     if [[ ! -f "$repo/$path" ]]; then
       continue
     fi
-    items=$(grep -cE '^[0-9]+\. ' "$repo/$path" || true)
+    items=$(grep -cE '^- TODO#[0-9]+ ' "$repo/$path" || true)
     printf '%s\ttodo-file\t%s items=%d\n' "$repo" "$path" "$items"
     found=true
   done < <(git -C "$repo" ls-files -- ':(glob)**/TODO.md')
