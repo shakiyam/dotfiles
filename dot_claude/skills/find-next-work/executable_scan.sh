@@ -11,7 +11,7 @@ set -Eeu -o pipefail
 #   no-upstream   <branch>      (one line per branch; "(gone)" if the upstream was deleted)
 #   stash         <n>
 #   todo-file     <path> items=<n>  (tracked TODO.md; items are "- TODO#<n>" lines)
-#   todo-comment  <path>:<line>:<text>  (one line per line containing TODO, FIXME, XXX or HACK, excluding mentions of TODO.md)
+#   todo-comment  <path>:<line>:<text>  (one line per line containing TODO, FIXME, XXX or HACK, excluding mentions of TODO.md and TODO#<n> IDs)
 #   clean         no details; printed when none of the above apply
 
 die() {
@@ -110,7 +110,7 @@ scan() {
   while IFS= read -r line; do
     printf '%s\ttodo-comment\t%s\n' "$repo" "$line"
     found=true
-  done < <(git -C "$repo" grep -nIP '\b(TODO|FIXME|XXX|HACK)\b(?!\.md)' -- . ':(exclude,glob)**/TODO.md' || true)
+  done < <(git -C "$repo" grep -nIP '\b(TODO|FIXME|XXX|HACK)\b(?!\.md|#)' -- . ':(exclude,glob)**/TODO.md' || true)
 
   if [[ "$found" == false ]]; then
     printf '%s\tclean\n' "$repo"
