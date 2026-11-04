@@ -1,8 +1,7 @@
 ---
 name: orchestrate-repos
-description: 判断が要る類似の変更を複数のリポジトリで進めるため、リポジトリごとにClaudeセッションを起動して作業を任せ、結果を集める。各リポジトリで、同じパスのファイルを同じ内容に揃える変更はrollout-commitを使う。
+description: 現在のリポジトリ以外で変更を伴う作業を、リポジトリごとに起動したClaudeセッションに任せ、結果を集める。ユーザーが他のリポジトリの変更を頼んだときだけ使う。各リポジトリで、同じパスのファイルを同じ内容に揃える変更はrollout-commitを使う。
 argument-hint: <repository>...
-disable-model-invocation: true
 ---
 
 # Orchestrate Repos
