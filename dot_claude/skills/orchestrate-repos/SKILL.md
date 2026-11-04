@@ -1,0 +1,20 @@
+---
+name: orchestrate-repos
+description: 判断が要る類似の変更を複数のリポジトリで進めるため、リポジトリごとにClaudeセッションを起動して作業を任せ、結果を集める。各リポジトリで、同じパスのファイルを同じ内容に揃える変更はrollout-commitを使う。
+argument-hint: <repository>...
+disable-model-invocation: true
+---
+
+# Orchestrate Repos
+
+引数: $ARGUMENTS
+
+1. 前提を確かめる。`HERDR_ENV=1` であること、引数のリポジトリがすべて存在することを確認し、満たさなければ理由を伝えて止まる。herdrスキルで同梱の手順書を読み込む。
+2. 各セッションに送る指示文と対象のリポジトリをユーザーに示し、承認を待つ。指示文には次を必ず入れる。
+   - 結果はSendMessageで送信元に返信し、最後の行を `=== END ===` にすること
+   - 普段のワークフローに従い、コミット案の提示まで進んだら止まること
+3. リポジトリごとに `herdr workspace create --cwd <リポジトリ> --label <リポジトリ名> --no-focus` を実行し、返されたルートペインで `herdr agent start <名前> --kind claude --pane <ペインID> -- --name <名前>` を実行する。名前は、同梱の手順書の命名規則に合うようにリポジトリ名から作る。`agent_not_ready` が返ったら `herdr agent read` で状況を確かめ、フォルダの信頼確認などはどのワークスペースのものかを示してユーザーに渡す。
+4. 手順3の名前を宛先にして、SendMessageに `notify_when_idle: true` を付けて指示を送る。
+5. 各セッションが手順2の指示に従ってSendMessageで返す結果を待ち、最後の行が `=== END ===` のものを完了とみなす。ポーリングはしない。返信がないままidle通知が届いたら、`herdr agent read` でそのペインの状況を確かめる。承認待ちやセッションからの質問は、どのワークスペースのものかを示してユーザーに渡す。
+6. 結果をリポジトリごとの表にまとめて報告する。コミットは、ユーザーが各ペインで行う。
+7. ユーザーの確認を取ってから、`herdr workspace close` で各ワークスペースを片付ける。
