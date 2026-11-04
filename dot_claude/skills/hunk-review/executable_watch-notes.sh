@@ -8,13 +8,29 @@ set -Eeu -o pipefail
 # Notes already reported by an earlier wait count as new only once, so notes added
 # between two waits are reported by the next one; the first wait ignores existing notes.
 # A change of HEAD, also one made between two waits, counts as a commit; clearing does not end the watch.
-# Exits 0 after printing new notes, 1 when the session is gone or a required command is missing,
+# The watch ends with the Claude Code process that started it, found among the ancestors,
+# so that no orphaned watch keeps the lock and swallows notes; without such an ancestor the watch
+# does not end this way.
+# Exits 0 after printing new notes, 1 when the session or the owner is gone or a required command is missing,
 # and 0 with a message when another wait for the same repository is already running.
-# WAIT_NOTES_INTERVAL sets the polling interval in seconds (default 2).
+# WATCH_NOTES_INTERVAL sets the polling interval in seconds (default 2).
 
 die() {
   echo "$*" >&2
   exit 1
+}
+
+find_owner() {
+  local PID=$PPID
+  local COMM
+  while [[ $PID -gt 1 ]]; do
+    COMM=$(ps -o comm= -p "$PID") || return 0
+    if [[ $COMM == claude ]]; then
+      echo "$PID"
+      return 0
+    fi
+    PID=$(ps -o ppid= -p "$PID" | tr -d ' ')
+  done
 }
 
 head_commit() {
@@ -29,13 +45,15 @@ list_notes() {
 if [[ $# -ne 1 ]]; then
   die "Usage: watch-notes.sh repository"
 fi
-for COMMAND in git hunk jq flock; do
+for COMMAND in flock git hunk jq ps; do
   if ! command -v "$COMMAND" >/dev/null; then
     die "Command not found: $COMMAND"
   fi
 done
 readonly REPOSITORY=$1
-readonly INTERVAL=${WAIT_NOTES_INTERVAL:-2}
+readonly INTERVAL=${WATCH_NOTES_INTERVAL:-2}
+OWNER=$(find_owner)
+readonly OWNER
 
 KEY=$(printf '%s' "$REPOSITORY" | cksum | cut -d ' ' -f 1)
 readonly STATE_PREFIX="${XDG_RUNTIME_DIR:-/tmp}/hunk-watch-notes-$KEY"
@@ -61,6 +79,9 @@ if [[ ! -e $HEAD_FILE ]]; then
 fi
 LAST_HEAD=$(<"$HEAD_FILE")
 while true; do
+  if [[ -n $OWNER ]] && ! kill -0 "$OWNER" 2>/dev/null; then
+    die "Claude Code process $OWNER that started the watch has ended"
+  fi
   HEAD=$(head_commit)
   if [[ $HEAD != "$LAST_HEAD" ]]; then
     if ! hunk session comment clear --repo "$REPOSITORY" --all --yes >/dev/null; then
