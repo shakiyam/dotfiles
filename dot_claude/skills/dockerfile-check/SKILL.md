@@ -1,6 +1,6 @@
 ---
 name: dockerfile-check
-description: Dockerfileをセキュリティとパフォーマンスのベスト・プラクティスに照らしてチェックする。Dockerfileを作成・変更したときや、レビューを頼まれたときに使う。
+description: Dockerfileをセキュリティとパフォーマンスのベスト・プラクティスに照らしてチェックする。Dockerfileを作成または変更したときや、レビューを頼まれたときに使う。
 ---
 
 # Dockerfileのベスト・プラクティス・チェック
