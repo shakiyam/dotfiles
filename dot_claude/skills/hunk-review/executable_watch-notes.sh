@@ -11,7 +11,7 @@ set -Eeu -o pipefail
 # The watch ends with the Claude Code process that started it, found among the ancestors,
 # so that no orphaned watch keeps the lock and swallows notes; without such an ancestor the watch
 # does not end this way.
-# Exits 0 after printing new notes, 1 when the session or the owner is gone or a required command is missing,
+# Exits 0 after printing new notes, 1 when a hunk command fails, the owner is gone, or a required command is missing,
 # and 0 with a message when another wait for the same repository is already running.
 # WATCH_NOTES_INTERVAL sets the polling interval in seconds (default 2).
 
@@ -67,7 +67,7 @@ fi
 
 if [[ ! -e $SEEN_FILE ]]; then
   if ! INITIAL=$(list_notes); then
-    die "No live Hunk session for $REPOSITORY"
+    die "Hunk command failed for $REPOSITORY (see the error above)"
   fi
   jq -c 'map(.noteId)' <<<"$INITIAL" >"$SEEN_FILE"
 fi
@@ -85,13 +85,13 @@ while true; do
   HEAD=$(head_commit)
   if [[ $HEAD != "$LAST_HEAD" ]]; then
     if ! hunk session comment clear --repo "$REPOSITORY" --all --yes >/dev/null; then
-      die "Hunk session ended for $REPOSITORY"
+      die "Hunk command failed for $REPOSITORY (see the error above)"
     fi
     LAST_HEAD=$HEAD
     echo "$HEAD" >"$HEAD_FILE"
   fi
   if ! CURRENT=$(list_notes); then
-    die "Hunk session ended for $REPOSITORY"
+    die "Hunk command failed for $REPOSITORY (see the error above)"
   fi
   NEW=$(jq -c --argjson seen "$SEEN_IDS" 'map(select(.noteId as $id | $seen | index($id) | not))' <<<"$CURRENT")
   if [[ $NEW != '[]' ]]; then
