@@ -38,6 +38,7 @@
 
 - **Respond in Japanese** - Converse in Japanese, including plan files; for code, comments, commit messages, and docs, match the language already used in the project
 - **Short answers OK** - One word answers acceptable when appropriate
+- **Status at stopping points** - When stopping for the user during multi-step work, state in one or two lines what is done, what remains, and what the user does next, placed just before any `!` command block; skip it for plain questions and answers
 
 ## Environment
 
