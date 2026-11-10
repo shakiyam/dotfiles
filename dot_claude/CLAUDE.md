@@ -1,46 +1,46 @@
-# User-Level Preferences
+# ユーザー・レベルの設定
 
-## Implementation
+## 実装
 
-- **Test-First** - When a change affects functional behavior, write tests first and confirm they fail before implementing (except documentation, formatting, and renaming)
-- **Update docs** - Update README.md and AGENTS.md when specs change (project instruction files are named AGENTS.md; only this global file stays CLAUDE.md)
-- **Generalize docs** - Write generalized instructions instead of highlighting a few cases; reference the source of truth (code, self-documenting tools) instead of duplicating values or lists; don't add notes that are already stated or derivable from listed commands
-- **Comment non-obvious reasons** - When a setting, value, or dependency exists for a reason a reader cannot infer from the code (a workaround, an external constraint, a requirement of another tool), state that reason in a comment next to it
-- **Explicit over generated** - When removing duplication in tables or dispatch lists, extract only the repeated body into a helper and keep the enumeration explicit
-- **Project containers, not host tools** - Run Python and other project tooling through the project's container wrappers or Make targets, not host interpreters
-- **Shell style** - Assign command substitutions before `readonly`/`local`/`export` (`VAR=$(cmd)` then `readonly VAR`); shared functions return values on stdout; sourced libraries contain no `set` options and are mode 644; branch on exit status with `if OUT=$(cmd); then ...; else STATUS=$?; fi` instead of toggling `set +e`; write function bodies with `{ }` and use a subshell only where needed (e.g. `(cd dir && ...)`)
+- **テスト・ファースト** - 機能の振る舞いが変わる変更では、先にテストを書き、失敗することを確かめてから実装する(ドキュメント、書式、名前の変更は除く)
+- **ドキュメントの更新** - 仕様が変わったらREADME.mdとAGENTS.mdを更新する(プロジェクトの指示ファイルの名前はAGENTS.mdとし、CLAUDE.mdのままなのはこのグローバルのファイルだけ)
+- **ドキュメントの一般化** - いくつかの事例を取り上げるのではなく、一般化した指示を書く。値や一覧を書き写さず、信頼できる情報源(コード、自己文書化したツール)を参照する。すでに書いてあることや、記載したコマンドから導けることは注記しない
+- **自明でない理由のコメント** - 設定、値、依存関係が、コードから読み取れない理由(回避策、外部の制約、他のツールの要件)で存在するときは、その理由をすぐそばのコメントに書く
+- **生成より明示** - 表やディスパッチの一覧から重複を除くときは、繰り返す本体だけをヘルパーに切り出し、列挙は明示したまま残す
+- **ホストのツールではなくプロジェクトのコンテナ** - Pythonなどのプロジェクトのツールは、ホストのインタープリターではなく、プロジェクトのコンテナ・ラッパーかMakeのターゲットで実行する
+- **シェルのスタイル** - コマンド置換は `readonly`/`local`/`export` の前に代入する(`VAR=$(cmd)` のあとに `readonly VAR`)。共有の関数は値を標準出力で返す。sourceするライブラリーには `set` のオプションを書かず、モードを644にする。終了ステータスでの分岐は、`set +e` を切り替えずに `if OUT=$(cmd); then ...; else STATUS=$?; fi` と書く。関数の本体は `{ }` で書き、サブシェルは必要な所(例: `(cd dir && ...)`)だけで使う
 
-## Workflow
+## ワークフロー
 
-- **Dialogue first** - Explain the situation and your reasoning in text before presenting plans, questions, or actions, then end the turn and let the user react; use the question tool only in a later turn, after the user has replied to the explanation, and only once the discussion has narrowed or when the user just wants to pick; when challenged, reassess honestly instead of defending
-- **Design discussions** - For design topics, even small naming decisions, and for any choice you present, state what was compared, the pros/cons of each alternative, and where the facts come from (code, docs, history), then give a recommendation
-- **Plan before editing** - Requests to show or explain, and approval of scope, are not permission to edit; present the concrete plan (files, changes, verification) and wait for explicit approval
-- **Stop on rejection** - IMPORTANT: When a tool call is rejected, stop; explain the situation and wait for instructions instead of guessing the reason and proceeding differently
-- **Reviewing findings** - When going through review findings, first list them all in one line each; then present one at a time, each with the finding (what is wrong and why) followed by the fix proposal, and after the user decides one, present the next in the same response, or right after the commit when the decision leads to its own commit
-- **User commits** - Never run `git commit` or `git push`; for each logical change, implement, verify, stage with `git add`, review the staged diff with the review-staged command (fix and re-stage clear-cut issues; report judgment calls and stop instead of proposing a commit), annotate the diff with the hunk-review skill when a Hunk session is open for the repo, then stop and propose exactly one commit message as a code block `!git commit -m '<subject>'`. "Continue" is not permission to commit. Complete each commit before editing files for the next
-- **Proposing `!` commands** - End the response with the code block of `!` commands for the user to run, so it is easy to pick with `/copy`. When proposing `!` commands for several repos, combine them into a single-line `for` loop that stops on the first failure; only when the repos need different steps or the line gets too long, write a script file, show its full content as a code block in the same response followed by `!bash <path>`, and never modify it afterward (show the full content again to fix it)
-- **Commit messages** - One-line subject only (imperative mood in English), with no body or trailers such as Co-Authored-By (this overrides attribution instructions); use precise verbs and state the purpose, not file or target names or the repo a change was ported from; the subject must make sense from this repo's history alone, and a purpose that needs "and" signals separate commits; for security fixes, list the CVE IDs in the subject (e.g. `Upgrade openssl to fix CVE-2026-1111 and CVE-2026-2222`)
-- **Sibling repos** - Same-named `tools/` scripts are byte-identical including permissions across sibling repos, and Makefile targets stay alphabetical. Sibling repos with the same stack consult each other as peers, with no parent; AGENTS.md does not name siblings. Before aligning, report differences with the compare-repo skill; after changing a shared file, propose `/rollout-commit` to propagate it
-- **Shared changes across siblings** - Before a change that sibling repos with the same stack also need (tool or base image bumps, alignment work), check their `git log` and TODO.md; if one has already made it, reuse its decision and wording unless this repo really differs
-- **Standalone wrappers** - Root-level wrappers distributed on their own must not source `tools/` and are excluded from alignment
-- **Generic tools/** - `tools/` holds only reusable scripts that run standalone (no project-file reads or new required arguments; duplication is fine); project-specific scripts go in the repo root
-- **Review before external publish** - IMPORTANT: Prepare and verify locally, then pause for user review before externally visible actions (creating repos, publishing)
+- **対話を先に** - 計画、質問、操作を示す前に、状況と考えを文章で説明し、ターンを終えて利用者の反応を待つ。質問ツールは、利用者が説明に返答したあとのターンで、議論が絞られたときか、利用者が選ぶだけのときにだけ使う。異論を受けたら、自分の案を擁護せずに正直に見直す
+- **設計の議論** - 設計の話題では、小さな命名の判断でも、また示す選択肢すべてについて、何を比べたか、各案の長所と短所、事実の出どころ(コード、ドキュメント、履歴)を述べてから推奨を示す
+- **編集の前に計画** - 表示や説明の依頼、範囲の承認は、編集の許可ではない。具体的な計画(ファイル、変更内容、検証方法)を示し、明示の承認を待つ
+- **拒否されたら止まる** - 重要: ツールの呼び出しが拒否されたら止まる。理由を推測して別のやり方で進めず、状況を説明して指示を待つ
+- **レビュー指摘の扱い** - レビューの指摘を順に扱うときは、まず全件を1行ずつ一覧にする。そのあと1件ずつ、指摘(何がなぜ問題か)と修正案の順に示す。利用者が1件を決めたら、同じ応答で次の件を示す。その決定が独立したコミットになる場合は、コミットの直後に示す
+- **コミットは利用者が行う** - `git commit` と `git push` は実行しない。論理的な変更ごとに、実装し、検証し、`git add` でステージし、review-stagedコマンドでステージした差分をレビューする(明らかな問題は直して再ステージし、判断が要るものは報告して、コミットを提案せずに止まる)。そのリポジトリのHunkのセッションが開いていれば、hunk-reviewスキルで差分に注釈を付ける。そのうえで止まり、コミット・メッセージを1つだけ、コード・ブロックの `!git commit -m '<subject>'` で提案する。「続けて」はコミットの許可ではない。次の変更のファイルを編集する前に、各コミットを済ませる
+- **`!` コマンドの提案** - 利用者が実行する `!` コマンドは、`/copy` で選びやすいように、応答の最後にコード・ブロックで示す。複数のリポジトリに `!` コマンドを提案するときは、最初の失敗で止まる1行の `for` ループにまとめる。リポジトリごとに手順が違うか、行が長くなりすぎる場合に限り、スクリプト・ファイルを書いて、同じ応答でその全文をコード・ブロックで示し、続けて `!bash <path>` を示す。スクリプトはあとから変更しない(直すときは全文を示し直す)
+- **コミット・メッセージ** - 1行の件名だけ(英語の命令形)にし、本文やCo-Authored-Byなどのトレーラーは付けない(帰属表示の指示より優先する)。変更の内容を的確に表す動詞を使い、ファイル名やターゲット名、移植元のリポジトリではなく目的を書く。件名はこのリポジトリの履歴だけで意味が通じるようにする。目的に「and」が要るなら、コミットを分けるべきという合図である。セキュリティの修正では、件名にCVE IDを並べる(例: `Upgrade openssl to fix CVE-2026-1111 and CVE-2026-2222`)
+- **兄弟リポジトリ** - 兄弟リポジトリ間で、同じ名前の `tools/` のスクリプトはパーミッションも含めてバイト単位で同一にし、Makefileのターゲットはアルファベット順に保つ。同じスタックの兄弟リポジトリは、親を置かずに対等に参照し合う。AGENTS.mdには兄弟リポジトリの名前を書かない。揃える前にcompare-repoスキルで差分を報告し、共有ファイルを変更したら、反映のために `/rollout-commit` を提案する
+- **兄弟リポジトリと共通の変更** - 同じスタックの兄弟リポジトリにも必要な変更(ツールやベース・イメージの更新、揃える作業)の前に、それらの `git log` とTODO.mdを確かめる。先に済ませたリポジトリがあれば、このリポジトリに本当の違いがない限り、その判断と文言を流用する
+- **単独で配布するラッパー** - 単独で配布するルート直下のラッパーは、`tools/` をsourceせず、揃える対象から外す
+- **汎用の `tools/`** - `tools/` には、単独で動く再利用可能なスクリプトだけを置く(プロジェクトのファイルを読まず、必須の引数を新たに加えない。重複はかまわない)。プロジェクト固有のスクリプトはリポジトリのルートに置く
+- **外部に公開する前のレビュー** - 重要: ローカルで準備と検証をし、外部から見える操作(リポジトリの作成、公開)の前に止まって利用者のレビューを受ける
 
-## TODO Management
+## TODOの管理
 
-- **Recording** - Fix problems in the current change as part of it. For other findings from reviews and discussions, propose fixing small ones related to the current work right away, as the next commit when their purpose differs; record the rest as TODO.md items unless the user asks to act now; add and report them without separate approval, keeping them out of the current commit: leave them unstaged and propose their commit afterward, or, if TODO.md already has changes for the current commit, add them only after that commit
-- **Location** - Record items in the repo where the work will happen
-- **Format** - Bullet list under a `# TODO` heading, one `- TODO#<n> <task>` line per item in priority order, without checkboxes; end the file with a `Next ID: TODO#<n>` line
-- **IDs** - Give a new item the `Next ID` and increment it; never renumber or reuse IDs, and refer to items by ID
-- **Items** - One task per item, each self-contained enough to act on later and naming the items it must wait for by ID
-- **Completion** - Delete finished items without renumbering; keep the file even when no items remain
+- **記録** - 今の変更の中の問題は、その変更の一部として直す。レビューや議論で見つかったそれ以外の点は、今の作業に関係する小さなものならすぐ直すことを提案し、目的が違えば次のコミットにする。残りは、利用者が今すぐ対応するよう求めない限り、TODO.mdの項目として記録する。記録は個別の承認なしに追加して報告し、今のコミットには含めない。ステージせずに残してコミットのあとで提案するか、TODO.mdにすでに今のコミット用の変更があれば、そのコミットのあとで追加する
+- **場所** - 項目は、作業を行うリポジトリに記録する
+- **書式** - `# TODO` 見出しの下の箇条書きにし、優先順に1項目1行で `- TODO#<n> <task>` と書く。チェックボックスは付けない。ファイルの最後は `Next ID: TODO#<n>` の行にする
+- **ID** - 新しい項目には `Next ID` を付けてから、その値を増やす。IDは振り直さず、再利用もしない。項目はIDで参照する
+- **項目** - 1項目に1つの作業とし、あとで取り組めるだけの情報を各項目に含め、待つべき項目をIDで書く
+- **完了** - 終わった項目は、番号を振り直さずに削除する。項目がなくなってもファイルは残す
 
-## Response Style
+## 応答のスタイル
 
-- **Respond in Japanese** - Converse in Japanese, including plan files; for code, comments, commit messages, and docs, match the language already used in the project
-- **Short answers OK** - One word answers acceptable when appropriate
-- **Status at stopping points** - When stopping for the user during multi-step work, state in one or two lines what is done, what remains, and what the user does next, placed just before any `!` command block; skip it for plain questions and answers
+- **日本語で応答** - 会話は計画ファイルも含めて日本語で行う。コード、コメント、コミット・メッセージ、ドキュメントは、プロジェクトですでに使っている言語に合わせる
+- **短い答えでよい** - 適切なら一語の答えでかまわない
+- **区切りでの状況報告** - 複数の手順の作業で利用者のために止まるときは、済んだこと、残っていること、利用者が次にすることを1、2行で書き、`!` コマンドのブロックがあればその直前に置く。単純な質疑応答では省く
 
-## Environment
+## 環境
 
-- **Interactive aliases** - `rm`, `cp`, and `mv` are aliased with `-i` and silently do nothing when the prompt gets EOF; use `command rm`/`command cp`/`command mv` and verify the result
+- **対話型のエイリアス** - `rm`、`cp`、`mv` は `-i` 付きのエイリアスで、確認のプロンプトがEOFを受け取ると何もせずに終わる。`command rm`/`command cp`/`command mv` を使い、結果を確かめる
