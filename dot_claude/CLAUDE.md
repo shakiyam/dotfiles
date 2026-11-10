@@ -11,8 +11,8 @@
 
 ## Workflow
 
-- **Dialogue first** - Explain the situation and your reasoning in text before presenting plans, questions, or actions, then end the turn and let the user react; use the question tool only after the discussion has narrowed or when the user just wants to pick; when challenged, reassess honestly instead of defending
-- **Design discussions** - For design topics, even small naming decisions, lay out alternatives with pros/cons and a recommendation
+- **Dialogue first** - Explain the situation and your reasoning in text before presenting plans, questions, or actions, then end the turn and let the user react; use the question tool only in a later turn, after the user has replied to the explanation, and only once the discussion has narrowed or when the user just wants to pick; when challenged, reassess honestly instead of defending
+- **Design discussions** - For design topics, even small naming decisions, and for any choice you present, state what was compared, the pros/cons of each alternative, and where the facts come from (code, docs, history), then give a recommendation
 - **Plan before editing** - Requests to show or explain, and approval of scope, are not permission to edit; present the concrete plan (files, changes, verification) and wait for explicit approval
 - **Stop on rejection** - IMPORTANT: When a tool call is rejected, stop; explain the situation and wait for instructions instead of guessing the reason and proceeding differently
 - **User commits** - Never run `git commit` or `git push`; for each logical change, implement, verify, stage with `git add`, review the staged diff with the review-staged command (fix and re-stage clear-cut issues; report judgment calls and stop instead of proposing a commit), annotate the diff with the hunk-review skill when a Hunk session is open for the repo, then stop and propose exactly one commit message as a code block `!git commit -m '<subject>'`. "Continue" is not permission to commit. Complete each commit before editing files for the next
