@@ -24,3 +24,9 @@
 	decorate = true
 [init]
 	defaultBranch = main
+# Alias only frequently typed commands that tab completion doesn't shorten;
+# commands that rewrite history or discard work stay unaliased so they are typed in full
+[alias]
+	cm = commit -m
+	ds = diff --staged
+	st = status
