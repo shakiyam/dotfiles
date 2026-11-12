@@ -35,7 +35,7 @@ description: Dockerfileをセキュリティとパフォーマンスのベスト
 ### 設定
 
 - サービスが待ち受けるポートをEXPOSEで宣言する
-- `org.opencontainers.image.revision` をビルド引数から設定する。CIのワークフローやMakefileがイメージをレジストリにpushしている場合は、`org.opencontainers.image.source` も設定する。その他のOCIラベルは任意
+- `org.opencontainers.image.revision` をビルド引数から設定する。ベース・イメージが `org.opencontainers.image.source` ラベルを持つ場合は、このリポジトリの値で上書きする。その他のOCIラベルは任意
 
 ## 出力形式
 

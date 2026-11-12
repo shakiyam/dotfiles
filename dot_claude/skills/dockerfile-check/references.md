@@ -9,6 +9,8 @@ dockerfile-checkのチェックリストの根拠。SKILL.mdのチェックリ�
 3. [OWASP Docker Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)
 4. [Top 20 Dockerfile best practices | Sysdig](https://www.sysdig.com/learn-cloud-native/dockerfile-best-practices)
 5. [OCI Image Format annotations](https://github.com/opencontainers/image-spec/blob/main/annotations.md)
+6. [Working with the Container registry | GitHub Docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+7. [Provenance attestations | Docker Docs](https://docs.docker.com/build/metadata/attestations/slsa-provenance/)
 
 ## チェックリストの根拠
 
@@ -23,7 +25,7 @@ dockerfile-checkのチェックリストの根拠。SKILL.mdのチェックリ�
 - シークレット [2]: hadolintのDL3064が検出するのは機密らしい名前のENV/ARGだけで、イメージにコピーされたシークレットのファイルは検出しない
 - setuid/setgid [2]: rootで動くコンテナでは削除しても意味がなく、実行時の `no-new-privileges` はすべてのバイナリでsetuidによる昇格を防ぐ。そのため、これを設定していない非rootの常駐サービスにだけ当てはまる
 - EXPOSE [1]: ポートを文書化する。hadolintのDL3011はポート番号の範囲しか確認しない
-- OCIラベル [4,5]: `revision` でイメージからコミットをたどれる。GitHub Container Registryは `source` でパッケージをリポジトリに結び付ける。ラベルはベース・イメージから引き継がれるため、`source` を設定しないとベース・イメージのリポジトリを示すことがある
+- OCIラベル [4,5,6,7]: `revision` でイメージからコミットをたどれる。`source` は任意とした。GitHub Container Registryは、ワークフローから `GITHUB_TOKEN` でpushしたパッケージをリポジトリに自動で結び付け、コマンド・ラインからpushしたものもパッケージの設定画面で結び付けられる。ラベルによる結び付けは推奨にとどまり、OCIの仕様も `source` を求めていない。Docker HubとDocker Scoutはこのラベルを読まず、provenanceのattestationでソースをたどる。ただし、ラベルはベース・イメージから引き継がれるため、ベース・イメージが `source` を持つ場合は上書きしないとベース・イメージのリポジトリを示してしまう
 
 ## hadolintに任せた項目
 
