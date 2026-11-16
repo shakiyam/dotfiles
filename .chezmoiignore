@@ -1,3 +1,5 @@
+Makefile
 TODO.md
 ruff.toml
 tests/
+tools/
