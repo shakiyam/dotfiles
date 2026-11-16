@@ -27,5 +27,6 @@ ignore = [
 [lint.per-file-ignores]
 "tests/**/*.py" = [
     "PT009",  # Tests use unittest so that they need only the standard library, like the hook
-    "S603",   # Tests run the hook with fixed arguments
+    "S603",   # Tests run the scripts under test with fixed arguments
+    "S607",   # Tests find git and bash on PATH, as the scripts under test do
 ]

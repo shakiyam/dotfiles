@@ -2,7 +2,9 @@
 set -Eeu -o pipefail
 
 # Classify sibling repositories of a reference repository for rolling out one of its commits.
-# Prints one line per target repository: <repository>\t<status>\t<details>
+# Besides the reference's siblings, it searches the repositories matched by the glob patterns
+# in ${XDG_CONFIG_HOME:-~/.config}/rollout-commit/repositories (one per line; "#" comments).
+# Prints one line per target repository: <repository path>\t<status>\t<details>
 #   status:  apply | applied | exception | candidate
 #   details: "; "-separated items such as apply=<paths>, differs=<paths>,
 #            uncommitted=<paths>, staged-changes, other-changes=<paths>
@@ -21,7 +23,7 @@ if [[ $# -ne 2 ]]; then
   die "Usage: precheck.sh reference_repository commit"
 fi
 
-if ! REFERENCE=$(cd "$1" && pwd); then
+if ! REFERENCE=$(cd "$1" && pwd -P); then
   die "Directory not found: $1"
 fi
 readonly REFERENCE
@@ -85,18 +87,17 @@ porcelain_paths() {
 }
 
 classify() {
-  local repo=$1 name
-  name=$(basename "$repo")
+  local repo=$1
 
   if ! git -C "$repo" diff --cached --quiet; then
-    printf '%s\texception\tstaged-changes\n' "$name"
+    printf '%s\texception\tstaged-changes\n' "$repo"
     return
   fi
 
   local uncommitted
   mapfile -t uncommitted < <(porcelain_paths "$repo" -- "${PATHS[@]}")
   if [[ ${#uncommitted[@]} -ne 0 ]]; then
-    printf '%s\texception\tuncommitted=%s\n' "$name" "$(join_by_comma "${uncommitted[@]}")"
+    printf '%s\texception\tuncommitted=%s\n' "$repo" "$(join_by_comma "${uncommitted[@]}")"
     return
   fi
 
@@ -112,7 +113,7 @@ classify() {
     fi
   done
   if [[ ${#differs[@]} -ne 0 ]]; then
-    printf '%s\texception\tdiffers=%s\n' "$name" "$(join_by_comma "${differs[@]}")"
+    printf '%s\texception\tdiffers=%s\n' "$repo" "$(join_by_comma "${differs[@]}")"
     return
   fi
 
@@ -134,20 +135,51 @@ classify() {
   fi
   local joined
   joined=$(printf '%s; ' "${details[@]}")
-  printf '%s\t%s\t%s\n' "$name" "$status" "${joined%; }"
+  printf '%s\t%s\t%s\n' "$repo" "$status" "${joined%; }"
 }
 
+# Prints candidate directories: the reference's siblings, then the configured patterns
+candidate_dirs() {
+  # Empty IFS keeps a configured pattern whole while still expanding it as a glob
+  local IFS= line
+  local config=${XDG_CONFIG_HOME:-$HOME/.config}/rollout-commit/repositories
+  printf '%s\n' "$(dirname "$REFERENCE")"/*/
+  if [[ ! -f "$config" ]]; then
+    return
+  fi
+  while read -r line || [[ -n "$line" ]]; do
+    if [[ -z "$line" || "$line" == \#* ]]; then
+      continue
+    fi
+    if [[ "$line" == \~ || "$line" == \~/* ]]; then
+      line=$HOME${line#\~}
+    fi
+    # shellcheck disable=SC2086
+    printf '%s\n' $line
+  done <"$config"
+}
+
+shopt -s nullglob
+declare -A SEEN=()
 FOUND=false
-for dir in "$(dirname "$REFERENCE")"/*/; do
-  repo=${dir%/}
-  if [[ "$repo" == "$REFERENCE" || ! -e "$repo/.git" ]]; then
+while IFS= read -r dir; do
+  # An unmatched glob leaves an empty line, and bash before 5.3 treats cd "" as staying put
+  if [[ -z "$dir" ]]; then
     continue
   fi
+  # Physical paths let a repository reached by both searches, or the reference, match itself
+  if ! repo=$(cd "$dir" 2>/dev/null && pwd -P); then
+    continue
+  fi
+  if [[ "$repo" == "$REFERENCE" || -n "${SEEN[$repo]:-}" || ! -e "$repo/.git" ]]; then
+    continue
+  fi
+  SEEN[$repo]=1
   if is_target "$repo"; then
     classify "$repo"
     FOUND=true
   fi
-done
+done < <(candidate_dirs)
 
 if [[ "$FOUND" == false ]]; then
   die "No target repositories found for $COMMIT"
