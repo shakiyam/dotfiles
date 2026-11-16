@@ -28,6 +28,9 @@
       "Bash(wc:*)",
       "Bash(which:*)"
     ],
+{{- /* These prefix rules miss rewritten forms such as `git -C <repo> push`; the
+bash-guard.py PreToolUse hook blocks those. The rules stay as a fallback for when
+hooks are disabled. */}}
     "deny": [
       "Bash(git push:*)",
       "Bash(sudo:*)",
@@ -38,5 +41,5 @@
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
-  "hooks": {"SessionStart":[{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session","timeout":10}]}]}
+  "hooks": {"PreToolUse":[{"matcher":"Bash","hooks":[{"type":"command","command":"python3 -I '{{ .chezmoi.homeDir }}/.claude/hooks/bash-guard.py'","timeout":10,"onFailure":"block"}]}],"SessionStart":[{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session","timeout":10}]}]}
 }
