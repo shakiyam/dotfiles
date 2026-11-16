@@ -65,9 +65,9 @@ class RolloutPrecheckTest(unittest.TestCase):
         config_dir.mkdir(parents=True)
         (config_dir / "repositories").write_text("".join(f"{line}\n" for line in lines))
 
-    def run_precheck(self, cwd=None):
+    def run_precheck(self, cwd=None, reference=None):
         result = subprocess.run(
-            ["bash", str(PRECHECK), str(self.reference), "HEAD"],
+            ["bash", str(PRECHECK), str(reference or self.reference), "HEAD"],
             cwd=cwd,
             env=self.env,
             capture_output=True,
@@ -76,8 +76,13 @@ class RolloutPrecheckTest(unittest.TestCase):
         )
         return [line.split("\t") for line in result.stdout.splitlines()]
 
-    def listed_repositories(self, cwd=None):
-        return [row[0] for row in self.run_precheck(cwd)]
+    def listed_repositories(self, cwd=None, reference=None):
+        return [row[0] for row in self.run_precheck(cwd, reference)]
+
+    def link_to_projects(self):
+        link = self.home / "linked"
+        link.symlink_to(self.reference.parent)
+        return link
 
     def test_lists_only_siblings_without_configuration(self):
         self.assertEqual(self.listed_repositories(), [str(self.sibling)])
@@ -95,6 +100,20 @@ class RolloutPrecheckTest(unittest.TestCase):
         # The pattern matches the sibling that the parent search already finds.
         self.configure("~/projects/*/")
         self.assertEqual(self.listed_repositories(), [str(self.sibling)])
+
+    def test_lists_a_repository_reached_through_a_link_once(self):
+        # The link and the parent search reach the sibling by different path strings.
+        self.link_to_projects()
+        self.configure("~/linked/*/")
+        self.assertEqual(self.listed_repositories(), [str(self.sibling)])
+
+    def test_excludes_the_reference_passed_through_a_link(self):
+        # The configuration reaches the reference by its physical path, while the
+        # argument names it through the link.
+        link = self.link_to_projects()
+        self.configure("~/projects/*/")
+        listed = self.listed_repositories(reference=link / self.reference.name)
+        self.assertEqual(listed, [str(self.sibling)])
 
     def test_excludes_the_reference_even_when_configured(self):
         self.configure(str(self.reference))
