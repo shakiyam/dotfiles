@@ -1,0 +1,4 @@
+# Repositories outside a reference's parent directory: the home directory's repositories
+# for a reference kept elsewhere, and the chezmoi source for references under the home
+~/*/
+~/.local/share/chezmoi/
