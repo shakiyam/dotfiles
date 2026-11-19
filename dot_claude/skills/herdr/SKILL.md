@@ -1,6 +1,6 @@
 ---
 name: herdr
-description: herdrのワークスペース、タブ、ペイン、エージェントを操作する。ユーザーがherdrに言及したとき、またはherdrでの操作を頼んだときだけ使う。
+description: herdrのワークスペース、タブ、ペイン、エージェントを操作する。ユーザーがherdrに言及したとき、またはherdrでの操作を頼んだときだけ使う。リポジトリのセッションに作業を任せる場合はorchestrate-reposを使う。
 ---
 
 # Herdr
